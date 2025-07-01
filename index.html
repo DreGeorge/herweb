@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Love Letter Homepage</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap');
+
+  :root {
+    --primary-color: #000000;
+    --accent-color: #9B59B6;
+    --text-color: #FFFFFF;
+    --card-bg: #1c1c1c;
+    --hover-bg: #2e2e2e;
+    --header-bg: #9B59B6;
+    --header-text: #FFFFFF;
+  }
+
+  [data-theme="light"] {
+    --primary-color: #FFFFFF;
+    --accent-color: #9B59B6;
+    --text-color: #000000;
+    --card-bg: #f0f0f0;
+    --hover-bg: #e0e0e0;
+    --header-bg: #9B59B6;
+    --header-text: #FFFFFF;
+  }
+
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    padding: 1rem;
+    position: relative;
+  }
+
+  h1 { margin: 0; font-size: 1.8rem; }
+  .toggle-btn {
+    position: absolute; top:1rem; right:1rem; cursor:pointer; background:none;
+    border:none; font-size:1.2rem; color:var(--header-text); transition:transform 0.3s;
+  }
+  .toggle-btn:hover { transform: rotate(20deg); }
+
+  .picture-frame-container { display: flex; justify-content: center; padding: 1rem; }
+  .picture-frame {
+    width: 160px; height: 240px; border-radius: 16px; background-color: var(--hover-bg);
+    box-shadow: inset 0 0 15px rgba(155, 89, 182, 0.4), 0 0 20px rgba(155, 89, 182, 0.5);
+    display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+    cursor: pointer;
+  }
+  .picture-frame img { width:100%; height:100%; object-fit:cover; border-radius:12px; }
+
+  .frame-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  font-size: 0.9rem; /* Slightly smaller for better fit */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+  padding: 1rem; /* More space around text */
+  word-wrap: break-word; /* Allow text to wrap within frame */
+  font-family: 'Poppins', sans-serif;
+  border-radius: 12px;
+  box-sizing: border-box; /* Ensure padding stays inside frame */
+}
+
+  .frame-overlay.show { opacity:1; pointer-events:auto; }
+
+  .card-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem; padding: 1rem;
+  }
+
+  .card {
+    background-color: var(--card-bg); border-radius: 1rem; padding: 1.2rem; text-align: center;
+    text-decoration: none; color: var(--text-color); border: 1px solid var(--accent-color);
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+  }
+  .card:hover {
+    transform: translateY(-4px); box-shadow: 0 4px 8px rgba(155,89,182,0.3);
+    background-color: var(--hover-bg);
+  }
+
+  .card h2 { margin-bottom: 0.4rem; font-size: 1rem; color: var(--accent-color); }
+  .card p { font-size: 0.8rem; color: #ccc; line-height: 1.3; }
+
+  footer { text-align: center; margin: 1.5rem 0; font-size: 0.75rem; color: #aaa; }
+  .back-to-top {
+    position: fixed; bottom: 1rem; right: 1rem; background: var(--accent-color);
+    color: #fff; border: none; border-radius: 1.5rem; padding: 0.5rem 1rem;
+    font-family: 'Pacifico', cursive; font-size: 0.9rem; cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3); transition: transform 0.3s, background-color 0.3s;
+  }
+  .back-to-top:hover { transform: translateY(-4px); background-color: #8e44ad; }
+
+  .smooth-type span { opacity: 0; animation: fadeInLetter 0.4s forwards; }
+  @keyframes fadeInLetter { to {opacity: 1;} }
+
+  .fade-in-pulse { animation: fadeInPulse 2.5s ease forwards; }
+  @keyframes fadeInPulse {
+    0% { opacity: 0; transform: scale(0.95); }
+    50% { opacity: 1; transform: scale(1.03); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .numpad { display:grid; grid-template-columns:repeat(3,60px); gap:0.5rem; margin:1rem 0; }
+  .numpad button {
+    font-size:1.2rem; padding:0.5rem; border-radius:0.5rem; border:none;
+    background-color:var(--hover-bg); color:#fff; cursor:pointer;
+    transition:transform 0.2s, background-color 0.3s;
+  }
+  .numpad button:hover { transform:scale(1.1); background-color:#3a3a3a; }
+  .pin-display { font-size:1.5rem; letter-spacing:0.5rem; margin-bottom:1rem; }
+
+  @media (max-width:500px){.card-grid{grid-template-columns:1fr;}h1{font-size:1.4rem;}}
+</style>
+</head>
+<body>
+
+<canvas id="fireworks" style="position: fixed; top:0; left:0; width:100vw; height:100vh; z-index:9999; pointer-events:none; display:none;"></canvas>
+
+<div id="pin-overlay" style="position: fixed; top:0; left:0; width:100vw; height:100vh;
+  background: linear-gradient(135deg, #000000, #2e2e2e); display: flex; flex-direction: column;
+  justify-content: center; align-items: center; color:#fff; font-family:'Helvetica Neue', Arial, sans-serif;
+  z-index:9998; text-align:center;">
+  <h1 class="smooth-type" style="color:#9B59B6; font-size:2rem; margin-bottom:1rem; font-family:'Poppins',sans-serif;" id="typing-target"></h1>
+  <div class="pin-display" id="pin-display">___</div>
+  <div class="numpad">
+    <button onclick="addDigit(1)">1</button><button onclick="addDigit(2)">2</button><button onclick="addDigit(3)">3</button>
+    <button onclick="addDigit(4)">4</button><button onclick="addDigit(5)">5</button><button onclick="addDigit(6)">6</button>
+    <button onclick="addDigit(7)">7</button><button onclick="addDigit(8)">8</button><button onclick="addDigit(9)">9</button>
+    <button onclick="clearPin()">←</button><button onclick="addDigit(0)">0</button><button onclick="checkPIN()">⏎</button>
+  </div>
+  <p id="error-msg" style="color:red; margin-top:1rem; font-size:1rem;"></p>
+</div>
+
+<div id="content" style="display:none;">
+  <header><h1>Welcome to Our Story</h1><button class="toggle-btn" id="mode-toggle">🌙</button></header>
+  <div class="picture-frame-container">
+    <div class="picture-frame" onclick="toggleFrameOverlay()">
+      <img src="https://i.imgur.com/Oa337YG.jpeg" alt="Main Picture">
+      <div class="frame-overlay" id="frameOverlay">You are the love I never expected but always needed. 💖</div>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <a href="things-i-adore.html" class="card"><h2>All the Things I Adore</h2><p>Click to explore my love for her smile, laugh, and kindness.</p></a>
+    <a href="memories.html" class="card"><h2>Memories Together</h2><p>Relive our best moments through our captured memories.</p></a>
+    <a href="letter-to-her.html" class="card"><h2>A Letter to Her</h2><p>Read the heartfelt words I wrote for her.</p></a>
+    <a href="little-things.html" class="card"><h2>Little Things That Make Me Smile</h2><p>Discover the small but meaningful details.</p></a>
+    <a href="dreams.html" class="card"><h2>Dreams We Share</h2><p>Our hopes and dreams for a future together.</p></a>
+    <a href="her-strength.html" class="card"><h2>Her Strength</h2><p>See why she's my inspiration every day.</p></a>
+    <a href="safe-place.html" class="card"><h2>Why She’s My Safe Place</h2><p>The comfort and peace I find in her presence.</p></a>
+  </div>
+  <footer>&copy; 2025 — This story continues with every heartbeat.</footer>
+  <button class="back-to-top" id="backToTop" title="Back to Top">Back to Top</button>
+</div>
+
+<script>
+const text="Mahal Kita Infinity";
+const target=document.getElementById("typing-target");
+[...text].forEach((char,i)=>{const span=document.createElement("span");span.textContent=char;span.style.animationDelay=`${i*0.1}s`;target.appendChild(span);});
+
+let enteredPin='';
+function addDigit(num){
+  if(enteredPin.length<3){
+    enteredPin+=num;
+    document.getElementById("pin-display").textContent=enteredPin.padEnd(3,'_');
+  }
+}
+function clearPin(){
+  enteredPin=enteredPin.slice(0,-1);
+  document.getElementById("pin-display").textContent=enteredPin.padEnd(3,'_');
+}
+function checkPIN(){
+  const correctPin="548";
+  if(enteredPin===correctPin){
+    document.getElementById("pin-overlay").style.display="none";
+    const content=document.getElementById("content");
+    content.style.display="block";
+    content.classList.add("fade-in-pulse");
+    document.getElementById("fireworks").style.display="block";
+    launchFireworks();
+  }else{
+    document.getElementById("error-msg").textContent="Incorrect PIN. Please try again.";
+    enteredPin='';document.getElementById("pin-display").textContent='___';
+  }
+}
+
+function launchFireworks(){
+  const canvas=document.getElementById("fireworks");
+  const ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  const particles=[];
+  for(let i=0;i<300;i++){
+    particles.push({
+      x:canvas.width/2, y:canvas.height/2,
+      angle:Math.random()*2*Math.PI,
+      speed:Math.random()*8+6, radius:Math.random()*2+1,
+      color:`hsl(${Math.random()*360},100%,60%)`, life:150
+    });
+  }
+  function animate(){
+    ctx.fillStyle="rgba(0,0,0,0.1)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+    particles.forEach((p,i)=>{
+      p.speed*=0.98; p.x+=Math.cos(p.angle)*p.speed; p.y+=Math.sin(p.angle)*p.speed; p.life--;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,Math.PI*2); ctx.fillStyle=p.color; ctx.fill();
+      if(p.life<=0)particles.splice(i,1);
+    });
+    if(particles.length>0)requestAnimationFrame(animate);
+    else canvas.style.display="none";
+  }
+  animate();
+}
+function toggleFrameOverlay(){document.getElementById("frameOverlay").classList.toggle("show");}
+
+const toggleBtn=document.getElementById('mode-toggle');
+toggleBtn.addEventListener('click',()=>{
+  const currentTheme=document.documentElement.getAttribute('data-theme');
+  if(currentTheme==='light'){
+    document.documentElement.removeAttribute('data-theme');
+    toggleBtn.textContent='🌙';
+  }else{
+    document.documentElement.setAttribute('data-theme','light');
+    toggleBtn.textContent='☀️';
+  }
+});
+</script>
+</body>
+</html>
